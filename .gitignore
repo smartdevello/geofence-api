@@ -1,2 +1,3 @@
-anaconda/
-.idea/
+__pycache__
+venv
+sandbox_geofence.py

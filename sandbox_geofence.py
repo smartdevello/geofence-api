@@ -15,7 +15,7 @@ def find_polygon_id(latitude, longitude, shapefile):
         else:
             return polygon_ids.iloc[0]
     else:
-        return -99  # not in any of the polygons
+        return -99  # not in any of the polygons   
 
 
 if __name__ == '__main__':
@@ -25,11 +25,9 @@ if __name__ == '__main__':
 
     # Read the shapefile
     dataframe = gpd.read_file(shapefile_path)
-
     # test coordinates somewhere in Jakarta, Indonesia
     latitude = -6.2088
     longitude = 106.8456
-
     # let's see how long this takes with 6769 polygons
     start_time = time.time()
     for i in range(1000):
