@@ -3,8 +3,11 @@ from flask_restful import Api, Resource
 import geopandas as gpd
 from shapely.geometry import Point
 
+
 app = Flask(__name__)
 api = Api(app)
+
+
 
 
 class GeoFence(Resource):
