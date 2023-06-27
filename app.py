@@ -9,13 +9,24 @@ api = Api(app)
 
 
 
-
+def isNumeric(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+    
 class GeoFence(Resource):
     def get(self):
         latitude = request.args.get('latitude')
         longitude = request.args.get('longitude')
 
-        if latitude and longitude:
+        if isNumeric(latitude) and isNumeric(longitude):
+            latitude = float(latitude)
+            longitude = float(longitude)
+
+            if latitude < -90 or latitude > 90 or longitude < -180 or longitude > 180:
+                return { "success": False ,"message": "latitude and longitude should be in valid range {} {}".format(latitude, longitude)}, 400    
                 # Path to the shapefile
             shapefile_path = 'shapefile_500/grid.shp'
 
@@ -23,11 +34,14 @@ class GeoFence(Resource):
             dataframe = gpd.read_file(shapefile_path)
 
             polygon_id = self.find_polygon_id(latitude, longitude, dataframe)
-
+            if polygon_id == -99:
+                return {    "success": False ,"message": "couldn't find in any grid" }, 200 
+            elif polygon_id == -2:
+                return {    "success": False ,"message": "found in multiple polygons" }, 200             
             return {    "success": True ,"message": "in grid {}".format(polygon_id)}, 200
         
         else:
-            return {    "success": False, "message": "Bad request, latitude or longitude can't be empty"}, 400
+            return {    "success": False, "message": "Bad request, latitude and longitude should be numeric parameter"}, 400
         
     def find_polygon_id(self, latitude, longitude, shapefile):
         point = gpd.GeoSeries([Point(longitude, latitude)])
